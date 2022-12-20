@@ -28,8 +28,7 @@ endmodule
 
 
 //4bit Counter simplier version
-module counter(input rst, clock, output [3:0] out);
-reg out;
+module counter(input rst, clock, output reg [3:0] out);
 always @ (posedge clock)
 if (rst)
 out <= 4'b0000;
