@@ -1,0 +1,33 @@
+`timescale 1ns / 1ps
+
+//d-flipflop
+module flipflop(input d,rst,clock, output reg q);
+always @(posedge clock, posedge rst)
+begin
+if (rst)
+q <= 1'b0;
+else
+q <= d;
+end
+endmodule
+
+//assuming fPGA board has a clock signal of 100MHz
+//this clock divider module dives the clock signal by half per flip flop
+//so to get 1Hz from 100MHz, log2(100M) = 27, need 27 flip flops
+module clock_divider(input rst, clock, output clock_out);
+wire [26:0] clock_div_output;  //divided clock signal (output of each filpflop
+wire [26:0] d; //input of each flip flop
+genvar i;
+
+flipflop a1(d[0], rst, clock, clock_div_output[0]);
+generate
+for (i = 1; i < 27; i= i+1) begin
+flipflop(d[i], rst, clock_div_output[i-1], clock_div_output[i]);
+end
+endgenerate;
+
+//can asign the input value at the end
+assign d = ~clock_div_output;   //assign all the flip flop input to inverse of previous flipflop output
+assign clock_out = clock_div_output[26];  //assign clock divider output to last output from the flipflop
+
+endmodule
