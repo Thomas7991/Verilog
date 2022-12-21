@@ -49,7 +49,7 @@ begin
 if (rst)
 i <= 27'b0;
 else if (i == num-1)
-i <= 27'b0;
+i <= 27'b0;          //when i reach 50M, reset the i back to 0
 else
 i <= i + 1;
 end
