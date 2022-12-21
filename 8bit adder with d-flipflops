@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-//8 bit adder operating at 25MHz
+//8 bit adder
 module fulladd(input a ,b, cin, output out, cout);
 assign out = (a^b) ^ cin;
 assign cout = ((a^b) & cin) | (a&b);
