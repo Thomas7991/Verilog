@@ -31,3 +31,40 @@ assign d = ~clock_div_output;   //assign all the flip flop input to inverse of p
 assign clock_out = clock_div_output[26];  //assign clock divider output to last output from the flipflop
 
 endmodule
+
+
+//clock divider with counter and a comparator
+//when counter reaches the pre-defined value, the clock divider changes value
+//either from 0 to 1 or 1 to 0
+//Since we have 100MHz frequency and we want signal to be 1Hz, it takes 100M clock cyles before clock divider
+//turns from 0 to 1 and back to 0
+//this means, it takes half the clock cycles (50M clock cyles) for clock divider to turn from 0 to 1 or 1 to 0
+module clock_divider2(input rst, clock, output reg out);
+localparam num = 50000000;
+reg [26:0] i;
+
+//50k counter (counts 1 to 50k and once reach 50k, change clock divider value from 0 to 1 or 1 to 0
+always @(posedge clock or posedge rst)
+begin
+if (rst)
+i <= 27'b0;
+else if (i == num-1)
+i <= 27'b0;
+else
+i <= i + 1;
+end
+
+//comparator
+always @ (posedge clock or posedge rst)
+begin
+if (rst)
+out <= 1'b0;
+else if (i == num-1)
+out = ~out;    //only if counter reaches 50k, invert the output 0 to 1 or 1 to 0
+else
+out = out;  //otherwise, keep same output value
+
+
+
+end
+endmodule
