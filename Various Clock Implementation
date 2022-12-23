@@ -1,0 +1,113 @@
+`timescale 1ns / 1ps
+
+//4bit counter
+//the LSB of the counter signal is half of the input signal
+//the first bit is 4 times as slow, 2nd bit is 8 times as slow, and ...
+//use this to create clock division by power of 2
+
+module counter (input rst, clock, output reg [3:0] out);
+always @(posedge clock) begin
+if (rst)
+out <= 4'b0000;
+else
+out <= out + 4'b0001;
+end
+endmodule
+
+module div_by_pow2(input rst, clock, output clock_div2, clock_div4, clock_div8, clock_div16);
+wire [3:0] clock_div;
+
+counter count1(rst, clock, clock_div);
+
+assign clock_div2 = clock_div[0];
+assign clock_div4 = clock_div[1];
+assign clock_div8 = clock_div[2];
+assign clock_div16 = clock_div[3];
+endmodule
+
+//this is a clock that flip the output clock (from 0 to 1 or 1 to 0) everytime overflow happens
+//since we have 4it counter, every 16th posedge, output clock will flip
+module thirty_two_posedge_clock(input rst, clock, output reg out_clock);
+reg [3:0] count;  //counts the number of posedge clock
+//need to keep track of this since we need to flip output clock at 16
+
+always @(posedge clock) begin
+if (rst)
+begin
+out_clock <= 0;
+count <= 0;
+end
+else if (count == 4'b1111)   
+begin
+out_clock <= ~out_clock;
+count <= count + 4'b0001;
+end
+else
+count <= count + 4'b0001;
+end
+endmodule
+
+//output clock swithces state every 28th posedge
+module twenty-eight_posedge_clock(input rst, clock, output reg out_clock);
+reg [3:0] count;  //counts the number of posedge clock
+//need to keep track of this since we need to flip output clock at 16
+
+always @(posedge clock) begin
+if (rst)
+begin
+out_clock <= 0;
+count <= 4'b0000;
+end
+else if (count == 4'b1110)   
+begin
+out_clock <= ~out_clock;
+count <= 4'b00000;
+end
+else
+count <= count + 4'b0001;
+end
+endmodule
+
+//33% duty cycle clock : the clock is held high(1) for 33% time of the pulse (so 66% time it is at low(0))
+//divide clock signal frequency by 3
+module odd_division_clock(input rst, clock, output reg out_clock);
+reg [2:0] count;
+always @(posedge clock) begin
+if (rst)
+begin
+out_clock = 0;
+count = 3'b000;
+end
+else if (count == 3'b010)
+begin
+out_clock = ~out_clock;
+count = count + 3'b001;
+end
+else if (count == 3'b110)
+begin
+out_clock = ~out_clock;
+count = 3'b000;
+end
+else
+begin
+count = count + 3'b001;
+out_clock = out_clock;
+end
+end
+endmodule
+
+
+
+
+
+/*
+module clock_gen(
+    input rst,
+    input clock,
+    output derived_clock
+    );
+    
+    
+    
+endmodule
+*/
