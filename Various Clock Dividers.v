@@ -72,7 +72,7 @@ endmodule
 //output clock swithces state every 28th posedge
 module twenty-eight_posedge_clock(input rst, clock, output reg out_clock);
 reg [3:0] count;  //counts the number of posedge clock
-//need to keep track of this since we need to flip output clock at 16
+//need to keep track of this since we need to flip output clock at 14
 
 always @(posedge clock) begin
 if (rst)
@@ -80,7 +80,7 @@ begin
 out_clock <= 0;
 count <= 4'b0000;
 end
-else if (count == 4'b1110)   
+else if (count == 4'b1101)   //at count equal to 13, flip the clock since 28/2 = 14
 begin
 out_clock <= ~out_clock;
 count <= 4'b00000;
