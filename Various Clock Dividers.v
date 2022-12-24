@@ -162,3 +162,38 @@ end
   assign clk_div_5 = temp_clock[4] || temp_clock2[4];
 
 endmodule
+
+
+//Creating pulse of clock
+//divde by 100 clocks with 1% duty cycle
+module clock_100(input rst, clock, output wire out_clock);
+reg [99:0] temp_clock;
+always @(posedge clock) begin
+if (rst)
+temp_clock <= {1'b1, {99{1'b0}}};  //100...000
+else
+temp_clock <= {temp_clock[98:0],temp_clock[99]};
+end
+
+	assign out_clock = temp_clock[99];
+endmodule
+
+//use divide by 100 clocks with 1% duty cycle to create an output clock
+//that is 50% duty cycle dvide by 200 clock running at 500kHz
+//since clock is orignially running at 100MHz, (100MHz / 200) = 500kHz
+module clock_(input rst, clock, output reg out_clock);
+reg [99:0] temp_clock;
+always @(posedge clock) begin
+if (rst)
+temp_clock <= {1'b1, {99{1'b0}}};  //100...000
+else
+temp_clock <= {temp_clock[98:0],temp_clock[99]};
+end
+
+always @(posedge clock) begin
+if (rst)
+out_clock <= 0;
+if (temp_clock[99] == 1) //every time temp_clock[99] is 1, invert
+out_clock <= ~out_clock; //this makes 50% duty cycle divide by 200 clocks
+end
+endmodule
