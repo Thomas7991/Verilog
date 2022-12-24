@@ -109,8 +109,7 @@ assign out_clock = clock_temp[2];
 endmodule
   
   
-  
-//50% duty cycle divide by 5 clocks
+//50% duty cycle divide by 4 clocks
 //duty cycle = ((time clock is 1) / (one period)) * 100%
 module odd_division_clock(input rst, clock, output out_clock);
 reg [2:0] clock_temp1 = 0;
@@ -122,8 +121,7 @@ if (rst)
 clock_temp1 <= 3'b100; //clock_temp1[0] = 0, clock_temp1[1] = 0, clock_temp1[2] = 1;
 else
 clock_temp1 <= {clock_temp1[1:0], clock_temp1[2]};
-//if clock_temp[3:0] = {0,0,1}, at next state, clock_temp[3:0] = {1,0,0}, and
-//the sate after, clock_temp[3:0]={0,1,0}
+  //if clock_temp[3:0] = {0,0,1}, at next state, clock_temp[3:0] = {1,0,0}, and the sate after, clock_temp[3:0]={0,1,0}
 end
 
 always @(negedge clock)
@@ -133,5 +131,34 @@ clock_temp2 <= 3'b100;
 else
 clock_temp2 <= {clock_temp2[1:0], clock_temp2[2]};
 end
-assign out_clock = clock_temp1[2] | clock_temp2[2];
+  assign out_clock = clock_temp1[2] || clock_temp2[2];
+endmodule
+
+
+//50% duty cycle divide by 5 clocks
+module clock_div_five(input clock, rst, output out_clock);
+reg [4:0] temp_clock;
+  always @ (posedge clock)
+begin
+	if (rst)
+	begin
+		temp_clock <= 5'b00110;
+	end
+	else
+    temp_clock <= {temp_clock[3:0], temp_clock[4]};
+end
+
+  reg [4:0] temp_clock2;
+  always @ (negedge clock)
+begin
+	if (rst)
+	begin
+		temp_clock2 <= 5'b00110;
+	end
+	else
+    temp_clock2 <= {temp_clock2[3:0], temp_clock2[4]};
+end
+  
+  assign clk_div_5 = temp_clock[4] || temp_clock2[4];
+
 endmodule
