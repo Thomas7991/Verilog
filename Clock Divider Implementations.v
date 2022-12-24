@@ -107,3 +107,31 @@ end
 assign out_clock = clock_temp[2];
 //so out_clock will be 1 33% of the time and 0 66% of the time
 endmodule
+  
+  
+  
+//50% duty cycle divide by 5 clocks
+//duty cycle = ((time clock is 1) / (one period)) * 100%
+module odd_division_clock(input rst, clock, output out_clock);
+reg [2:0] clock_temp1 = 0;
+reg [2:0] clock_temp2 = 0;
+
+always @(posedge clock)
+begin
+if (rst)
+clock_temp1 <= 3'b100; //clock_temp1[0] = 0, clock_temp1[1] = 0, clock_temp1[2] = 1;
+else
+clock_temp1 <= {clock_temp1[1:0], clock_temp1[2]};
+//if clock_temp[3:0] = {0,0,1}, at next state, clock_temp[3:0] = {1,0,0}, and
+//the sate after, clock_temp[3:0]={0,1,0}
+end
+
+always @(negedge clock)
+begin
+if (rst)
+clock_temp2 <= 3'b100;
+else
+clock_temp2 <= {clock_temp2[1:0], clock_temp2[2]};
+end
+assign out_clock = clock_temp1[2] | clock_temp2[2];
+endmodule
