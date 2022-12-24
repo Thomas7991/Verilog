@@ -70,17 +70,17 @@ endmodule
 
 //33% duty cycle clock : the clock is held high(1) for 33% time of the pulse (so 66% time it is at low(0))
 //divide clock signal frequency by 3
-module odd_division_clock(input rst, clock, output reg out_clock);
+module odd_division_clock(input rst, clock, output out_clock);
 reg [2:0] clock_temp;
 
-assign out_clock = clock_temp[2];   //set output clock to 1
 always @(posedge clock)
 begin
 if (rst)
 clock_temp <= 3'b100; //clock_temp[0] = 0, clock_temp[1] = 0, clock_temp[2] = 1;
 else
 clock_temp <= {clock_temp[1:0], clock_temp[2]};
-//initially, clock_temp[3:0] = {0,0,1}, at next state, clock_temp[3:0] = {1,0,0}, and the sate after, clock_temp[3:0]={0,1,0}
+//if clock_temp[3:0] = {0,0,1}, at next state, clock_temp[3:0] = {1,0,0}, and
+//the sate after, clock_temp[3:0]={0,1,0}
 end
 assign out_clock = clock_temp[2];
 //so out_clock will be 1 33% of the time and 0 66% of the time
