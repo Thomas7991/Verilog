@@ -109,7 +109,7 @@ assign out_clock = clock_temp[2];
 endmodule
   
   
-//50% duty cycle divide by 4 clocks
+//50% duty cycle divide by 3 clocks
 //duty cycle = ((time clock is 1) / (one period)) * 100%
 module odd_division_clock(input rst, clock, output out_clock);
 reg [2:0] clock_temp1 = 0;
