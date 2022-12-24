@@ -1,5 +1,27 @@
 `timescale 1ns / 1ps
 
+// generate 100 Hz from 50 MHz with 50% duty cycle
+module clock(input rst, clock, output reg out_clock);
+reg [17:0] count = 0;   //log2(50M/100) == 19
+
+always @(posedge clock or posedge rst) begin
+if (rst) begin
+cout <= 0;
+out <= 0;
+end
+else begin
+if (count < 249999) //(50MHz/100Hz)/2 == 25000
+begin
+count <= count + 1;
+end
+else
+begin
+count <= 0;
+out <= ~out;
+end
+end
+endmodule
+
 //4bit counter
 //the LSB of the counter signal is half of the input signal
 //the first bit is 4 times as slow, 2nd bit is 8 times as slow, and ...
