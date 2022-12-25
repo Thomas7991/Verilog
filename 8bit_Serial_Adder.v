@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 //8bit serial adder
-module serial_adder(input rst, clock, load, input [7:0] a,b, output reg [7:0] out);
+module serial_adder(input rst, clock, load, input [7:0] a,b, output [7:0] out);
 wire [7:0] a_in, b_in;
 wire cout,cin, s;
 
