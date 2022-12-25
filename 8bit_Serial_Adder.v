@@ -5,8 +5,8 @@ module serial_adder(input rst, clock, load, input [7:0] a,b, output reg [7:0] ou
 wire [7:0] a_in, b_in;
 wire cout,cin, s;
 
-shift_reg_8 a1(rst, clock, load, 1'b0, a, a_in);
-shift_reg_8 a2(rst, clock, load, 1'b0, b, b_in);
+shift_reg a1(rst, clock, load, 1'b0, a, a_in);
+shift_reg a2(rst, clock, load, 1'b0, b, b_in);
 register_1 a3(rst, clock, cout, cin);
 full_adder a4(a_in[0], b_in[0], cin, sum, cout);
 sipo a5(sum, rst, clock, out);
