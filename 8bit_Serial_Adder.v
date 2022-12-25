@@ -19,7 +19,7 @@ always @(posedge clock) begin
 if (rst)
 out <= 8'b0;
 else
-out <= {a, out[6:1]}; //right shifting with input a at msb
+ out <= {a, out[7:1]}; //right shifting with input a at msb
 end
 endmodule
 
