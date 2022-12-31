@@ -1,5 +1,30 @@
 `timescale 1ns / 1ps
 
+//2 Hz clock divider
+mdoule clock(input rst, clock, output reg out_clock);
+localparam DIV_FACTOR = 25000000;
+reg [31:0] counter;
+
+always @ (posedge(clk) or posedge(rst))
+begin
+if(rst)
+begin
+counter <= 32'b0;
+out_clock <= 1'b0;
+end
+	else if (counter == DIV_FACTOR - 1)
+begin
+counter <= 32'b0;
+out_clock <= ~out_clock;
+end
+else
+begin
+counter <= counter + 32'b1;
+out_clock <= out_clock;
+end	
+end
+
+
 // generate 100 Hz from 50 MHz with 50% duty cycle
 module clock(input rst, clock, output reg out_clock);
 reg [17:0] count = 0;   //log2(50M/100) == 19
