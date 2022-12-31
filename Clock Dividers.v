@@ -1,51 +1,29 @@
 `timescale 1ns / 1ps
 
-//2 Hz clock divider
+//2 Hz clock divider with 100MHz
 mdoule clock(input rst, clock, output reg out_clock);
-localparam DIV_FACTOR = 25000000;
+localparam DIV_FACTOR = 25000000;   //(100MHz)/(2 * 2Hz)
 reg [31:0] counter;
 
 always @ (posedge(clk) or posedge(rst))
 begin
 if(rst)
 begin
-counter <= 32'b0;
+counter <= 32'b0;     //log2(100MHz/2Hz) == 25
 out_clock <= 1'b0;
 end
-	else if (counter == DIV_FACTOR - 1)
+else if (counter == DIV_FACTOR - 1)
 begin
-counter <= 32'b0;
 out_clock <= ~out_clock;
+counter <= 32'b0;
 end
 else
 begin
-counter <= counter + 32'b1;
 out_clock <= out_clock;
+counter <= counter + 32'b1;
 end	
 end
 
-
-// generate 100 Hz from 50 MHz with 50% duty cycle
-module clock(input rst, clock, output reg out_clock);
-reg [17:0] count = 0;   //log2(50M/100) == 19
-
-always @(posedge clock or posedge rst) begin
-if (rst) begin
-cout <= 0;
-out <= 0;
-end
-else begin
-if (count < 249999) //(50MHz/100Hz)/2 == 25000
-begin
-count <= count + 1;
-end
-else
-begin
-count <= 0;
-out <= ~out;
-end
-end
-endmodule
 
 //4bit counter
 //the LSB of the counter signal is half of the input signal
